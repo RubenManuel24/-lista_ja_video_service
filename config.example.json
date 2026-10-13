@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "eventType": "casamento",
+  "languages": { "default": "pt", "available": ["pt", "en"] },
+  "opening": {
+    "variant": "envelope",
+    "sealInitials": "M & R",
+    "tapHintText": { "pt": "Toque no lacre para abrir o convite", "en": "Tap the seal to open the invite" }
+  },
+  "cover": {
+    "title": { "pt": "Márcia & Ricardo", "en": "Márcia & Ricardo" },
+    "subtitle": { "pt": "Vamos casar", "en": "We're getting married" },
+    "eventDate": "2026-12-12T15:00:00+01:00"
+  },
+  "countdown": { "enabled": true, "targetDate": "2026-12-12T15:00:00+01:00" },
+  "venues": [
+    {
+      "id": "ceremonia",
+      "kind": "ceremonia",
+      "name": { "pt": "Cerimónia religiosa", "en": "Wedding ceremony" },
+      "startTime": "2026-12-12T15:00:00+01:00",
+      "location": {
+        "lat": -8.8368,
+        "lng": 13.2343,
+        "address": "Igreja Nossa Senhora do Carmo, Luanda",
+        "geoLink": "geo:-8.8368,13.2343?q=Igreja+Nossa+Senhora+do+Carmo,+Luanda"
+      },
+      "mapButton": { "showStaticImage": true, "allowEmbed": false }
+    },
+    {
+      "id": "recepcao",
+      "kind": "recepcao",
+      "name": { "pt": "Recepção", "en": "Reception" },
+      "startTime": "2026-12-12T18:30:00+01:00",
+      "location": {
+        "lat": -8.8147,
+        "lng": 13.2302,
+        "address": "Salão Talatona Garden, Luanda",
+        "geoLink": "geo:-8.8147,13.2302?q=Salão+Talatona+Garden,+Luanda"
+      },
+      "mapButton": { "showStaticImage": true, "allowEmbed": false }
+    }
+  ],
+  "programSchedule": [
+    { "time": "15:00", "label": { "pt": "Cerimónia religiosa", "en": "Wedding ceremony" }, "iconId": "church" },
+    { "time": "17:00", "label": { "pt": "Sessão de fotos", "en": "Photo session" }, "iconId": "camera" },
+    { "time": "18:30", "label": { "pt": "Recepção e jantar", "en": "Reception & dinner" }, "iconId": "toast" },
+    { "time": "21:00", "label": { "pt": "Abertura da pista", "en": "First dance & party" }, "iconId": "music" }
+  ],
+  "dressCode": {
+    "description": { "pt": "Traje social. Pedimos para evitar branco e tons de bordô, reservados aos noivos.", "en": "Formal attire. Please avoid white and burgundy, reserved for the couple." },
+    "colorPalette": ["#7A2E3A", "#C9A24B", "#EADFC8", "#3E5641"]
+  },
+  "blocks": [
+    {
+      "type": "lista_presentes",
+      "order": 1,
+      "enabled": true,
+      "content": {
+        "text": { "pt": "A vossa presença é o maior presente. Quem desejar contribuir para a nossa lua-de-mel, pode fazê-lo por transferência.", "en": "Your presence is the greatest gift. If you'd like to contribute to our honeymoon, you can do so by transfer." },
+        "iban": "AO06 0000 0000 0000 0000 0000 0",
+        "titular": "Márcia & Ricardo"
+      }
+    },
+    {
+      "type": "galeria_fotos",
+      "order": 2,
+      "enabled": true,
+      "content": { "note": { "pt": "Galeria com fotos do casal (placeholders nesta demo).", "en": "Photo gallery (placeholders in this demo)." } }
+    },
+    {
+      "type": "faq",
+      "order": 3,
+      "enabled": true,
+      "content": {
+        "items": [
+          { "q": { "pt": "Posso levar acompanhante?", "en": "Can I bring a plus one?" }, "a": { "pt": "Sim, indique no RSVP quantos acompanhantes.", "en": "Yes, please indicate it in the RSVP." } },
+          { "q": { "pt": "Há estacionamento?", "en": "Is there parking?" }, "a": { "pt": "Sim, no salão, com manobrista.", "en": "Yes, valet parking at the venue." } }
+        ]
+      }
+    }
+  ],
+  "actionBar": [
+    { "iconId": "map", "label": { "pt": "Mapa Igreja", "en": "Church map" }, "action": "map_igreja", "targetVenueId": "ceremonia" },
+    { "iconId": "map", "label": { "pt": "Mapa Salão", "en": "Venue map" }, "action": "map_salao", "targetVenueId": "recepcao" },
+    { "iconId": "check", "label": { "pt": "Confirmar", "en": "RSVP" }, "action": "confirmar_presenca" },
+    { "iconId": "gift", "label": { "pt": "Presentes", "en": "Gifts" }, "action": "lista_presentes" }
+  ],
+  "rsvp": { "askCompanions": true, "askNotes": true, "closeDate": "2026-12-05T23:59:00+01:00" },
+  "theme": {
+    "fontDisplay": "Georgia, 'Palatino Linotype', 'Iowan Old Style', serif",
+    "fontBody": "-apple-system, 'Segoe UI', Roboto, sans-serif",
+    "colors": {
+      "primary": "#7A2E3A",
+      "secondary": "#C9A24B",
+      "background": "#FAF3EC",
+      "text": "#2B2320"
+    }
+  },
+  "assets": {},
+  "signatureFooter": true
+}

@@ -1,0 +1,65 @@
+# lista_ja_video_service/docker-compose.yml
+#
+# Pensado para correr num único VPS (ex.: Hetzner CX22 ou DigitalOcean
+# equivalente — decisão registada na Fase 1: custo fixo previsível em vez
+# de serverless, que sai caro com payloads de vídeo). api e worker correm
+# em containers separados a partir da MESMA imagem, para poderem escalar
+# de forma independente mais tarde (ex.: mais réplicas do worker em dias
+# de pico, sem replicar a API).
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    command: node src/api/server.js
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RENDER_OUTPUT_DIR=/app/render-output
+      - PORT=4000
+    ports:
+      - "4000:4000"
+    volumes:
+      - render-output:/app/render-output
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: node src/worker-entrypoint.js
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RENDER_OUTPUT_DIR=/app/render-output
+    volumes:
+      - render-output:/app/render-output
+    depends_on:
+      redis:
+        condition: service_healthy
+    # Em dias de pico (muitos casamentos a gerar convites ao mesmo tempo),
+    # sobe isto para 2-3 réplicas: docker compose up -d --scale worker=3
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1.5G
+
+volumes:
+  redis-data:
+  render-output:
