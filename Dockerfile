@@ -11,10 +11,10 @@ RUN npm ci --omit=dev
 
 FROM node:20-bookworm-slim AS runtime
 
-# FFmpeg é o único requisito nativo desta imagem — a Fase 1 exige render
+# FFmpeg (vídeo) e poppler-utils (pré-visualização de PDF). Requisitos nativos desta imagem — a Fase 1 exige render
 # server-side, não no dispositivo, e é isto que torna isso possível.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg curl && \
+    apt-get install -y --no-install-recommends ffmpeg curl poppler-utils && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

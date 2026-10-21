@@ -13,6 +13,8 @@ const { promisify } = require("util");
 const execFileAsync = promisify(execFile);
 
 const { renderSlidePng } = require("./build-slide-png");
+const { loadCouplePhoto } = require("../common/couple-photo");
+const { loadTemplateArt } = require("../common/template-art");
 const { imageToSegmentArgs, concatArgs } = require("./ffmpeg-args");
 
 function localizedText(field, lang, fallback) {
@@ -20,7 +22,7 @@ function localizedText(field, lang, fallback) {
   return field[lang] || field.pt || Object.values(field)[0] || fallback || "";
 }
 
-function buildSlidesFromConfig(config, lang = "pt") {
+function buildSlidesFromConfig(config, lang = "pt", couplePhoto = null, art = null) {
   const colors = config.theme.colors;
   const eventDate = new Date(config.cover.eventDate);
   const dateStr = eventDate.toLocaleDateString(lang === "pt" ? "pt-PT" : "en-GB", {
@@ -35,6 +37,8 @@ function buildSlidesFromConfig(config, lang = "pt") {
         subtitle: localizedText(config.cover.subtitle, lang),
         lines: [dateStr],
         colors,
+        photo: couplePhoto || undefined,
+        art: art || undefined,
       },
     },
   ];
@@ -65,6 +69,7 @@ function buildSlidesFromConfig(config, lang = "pt") {
     },
   });
 
+  if (art) slides.forEach((s) => { s.spec.art = art; });
   return slides;
 }
 
@@ -76,7 +81,9 @@ function buildSlidesFromConfig(config, lang = "pt") {
 async function buildBaseVideo(config, outPath, lang = "pt") {
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "listaja-video-"));
-  const slides = buildSlidesFromConfig(config, lang);
+  const couplePhoto = await loadCouplePhoto(config, 360, 450);
+  const art = await loadTemplateArt(config, 400);
+  const slides = buildSlidesFromConfig(config, lang, couplePhoto, art);
   const segmentPaths = [];
 
   try {

@@ -77,7 +77,17 @@ function shade(hex, percent) {
 
 async function renderSlidePng(spec) {
   const svg = slideSvg(spec);
-  return sharp(Buffer.from(svg)).png().toBuffer();
+  const base = sharp(Buffer.from(svg)).png();
+  const layers = [];
+  if (spec.art) {
+    layers.push({ input: spec.art.tl, left: 0, top: 120 });
+    layers.push({ input: spec.art.br, left: W - 400, top: H - 120 - 400 });
+  }
+  // foto oval (360x450) acima do título, centrada
+  if (spec.photo) layers.push({ input: spec.photo, left: Math.round((W - 360) / 2), top: 230 });
+  if (!layers.length) return base.toBuffer();
+  const png = await base.toBuffer();
+  return sharp(png).composite(layers).png().toBuffer();
 }
 
 module.exports = { renderSlidePng, W, H };

@@ -5,7 +5,8 @@
   "main": "src/api/server.js",
   "scripts": {
     "start:api": "node src/api/server.js",
-    "start:worker": "node src/worker-entrypoint.js"
+    "start:worker": "node src/worker-entrypoint.js",
+    "test": "node --test test/reminders.test.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -17,6 +18,7 @@
     "ioredis": "^6.0.0",
     "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.4",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.4",
+    "web-push": "^3.6.7"
   }
 }

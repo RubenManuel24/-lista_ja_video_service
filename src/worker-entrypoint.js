@@ -6,3 +6,4 @@
 require("./queue/workers/video.worker");
 require("./queue/workers/static.worker");
 console.log("[workers] video, overlay, pdf e image workers activos");
+require("./reminders/daily-reminders").start();

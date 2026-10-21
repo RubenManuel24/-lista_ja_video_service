@@ -85,4 +85,9 @@ const overlayWorker = new Worker(
 videoWorker.on("failed", (job, err) => console.error(`[video.worker] job ${job?.id} falhou:`, err));
 overlayWorker.on("failed", (job, err) => console.error(`[overlay.worker] job ${job?.id} falhou:`, err));
 
+videoWorker.on("active", (job) => console.log(`[video.worker] a processar job ${job.id}`));
+videoWorker.on("completed", (job) => console.log(`[video.worker] concluído job ${job.id}`));
+overlayWorker.on("active", (job) => console.log(`[overlay.worker] a processar job ${job.id}`));
+overlayWorker.on("completed", (job) => console.log(`[overlay.worker] concluído job ${job.id}`));
+
 module.exports = { videoWorker, overlayWorker };

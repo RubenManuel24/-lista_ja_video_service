@@ -52,4 +52,9 @@ const imageWorker = new Worker(
 pdfWorker.on("failed", (job, err) => console.error(`[pdf.worker] job ${job?.id} falhou:`, err));
 imageWorker.on("failed", (job, err) => console.error(`[image.worker] job ${job?.id} falhou:`, err));
 
+pdfWorker.on("active", (job) => console.log(`[pdf.worker] a processar job ${job.id}`));
+pdfWorker.on("completed", (job) => console.log(`[pdf.worker] concluído job ${job.id}`));
+imageWorker.on("active", (job) => console.log(`[image.worker] a processar job ${job.id}`));
+imageWorker.on("completed", (job) => console.log(`[image.worker] concluído job ${job.id}`));
+
 module.exports = { pdfWorker, imageWorker };

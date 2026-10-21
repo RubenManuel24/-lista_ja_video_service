@@ -7,6 +7,8 @@
 
 const { PDFDocument, rgb, StandardFonts } = require("pdf-lib");
 const QRCode = require("qrcode");
+const { loadCouplePhoto } = require("../common/couple-photo");
+const { loadTemplateArt } = require("../common/template-art");
 
 // A5 em pontos (72dpi): 420 x 595
 const A5_WIDTH = 420;
@@ -30,8 +32,19 @@ async function buildPdfA5(config, inviteLink, lang = "pt") {
   const fontBody = await pdf.embedFont(StandardFonts.Helvetica);
 
   const colors = config.theme.colors;
+  const photoPng = await loadCouplePhoto(config, 252, 312); // 3x para ficar nítida ao imprimir
+  const dy = photoPng ? 70 : 0; // com foto, o texto desce
   const primary = hexToRgb01(colors.primary);
   const text = hexToRgb01(colors.text);
+
+  const art = await loadTemplateArt(config, 520);
+  if (art) {
+    const tl = await pdf.embedPng(art.tl);
+    const br = await pdf.embedPng(art.br);
+    const dim = 170;
+    page.drawImage(tl, { x: 0, y: A5_HEIGHT - dim, width: dim, height: dim });
+    page.drawImage(br, { x: A5_WIDTH - dim, y: 0, width: dim, height: dim });
+  }
 
   page.drawRectangle({
     x: 20, y: 20, width: A5_WIDTH - 40, height: A5_HEIGHT - 40,
@@ -42,7 +55,7 @@ async function buildPdfA5(config, inviteLink, lang = "pt") {
   const titleSize = 30;
   const titleWidth = fontTitle.widthOfTextAtSize(title, titleSize);
   page.drawText(title, {
-    x: (A5_WIDTH - titleWidth) / 2, y: A5_HEIGHT - 140,
+    x: (A5_WIDTH - titleWidth) / 2, y: A5_HEIGHT - 140 - dy,
     size: titleSize, font: fontTitle, color: primary,
   });
 
@@ -50,7 +63,7 @@ async function buildPdfA5(config, inviteLink, lang = "pt") {
   const subSize = 10;
   const subWidth = fontBody.widthOfTextAtSize(subtitle, subSize);
   page.drawText(subtitle, {
-    x: (A5_WIDTH - subWidth) / 2, y: A5_HEIGHT - 165,
+    x: (A5_WIDTH - subWidth) / 2, y: A5_HEIGHT - 165 - dy,
     size: subSize, font: fontBody, color: text,
   });
 
@@ -60,7 +73,7 @@ async function buildPdfA5(config, inviteLink, lang = "pt") {
   });
   const dateWidth = fontBody.widthOfTextAtSize(dateStr, 13);
   page.drawText(dateStr, {
-    x: (A5_WIDTH - dateWidth) / 2, y: A5_HEIGHT - 195,
+    x: (A5_WIDTH - dateWidth) / 2, y: A5_HEIGHT - 195 - dy,
     size: 13, font: fontBody, color: text,
   });
 
@@ -69,9 +82,14 @@ async function buildPdfA5(config, inviteLink, lang = "pt") {
     const venueLine = `${localizedText(venue.name, lang)} · ${venue.location.address}`;
     const vw = fontBody.widthOfTextAtSize(venueLine, 10);
     page.drawText(venueLine, {
-      x: (A5_WIDTH - vw) / 2, y: A5_HEIGHT - 220,
+      x: (A5_WIDTH - vw) / 2, y: A5_HEIGHT - 220 - dy,
       size: 10, font: fontBody, color: text,
     });
+  }
+
+  if (photoPng) {
+    const photoImage = await pdf.embedPng(photoPng);
+    page.drawImage(photoImage, { x: (A5_WIDTH - 84) / 2, y: A5_HEIGHT - 35 - 104, width: 84, height: 104 });
   }
 
   // QR code
@@ -80,14 +98,14 @@ async function buildPdfA5(config, inviteLink, lang = "pt") {
   const qrImage = await pdf.embedPng(qrBytes);
   const qrDim = 140;
   page.drawImage(qrImage, {
-    x: (A5_WIDTH - qrDim) / 2, y: A5_HEIGHT - 420,
+    x: (A5_WIDTH - qrDim) / 2, y: A5_HEIGHT - 420 - dy,
     width: qrDim, height: qrDim,
   });
 
   const hint = lang === "pt" ? "Aponte a câmara para confirmar presença" : "Scan to RSVP";
   const hintWidth = fontBody.widthOfTextAtSize(hint, 9);
   page.drawText(hint, {
-    x: (A5_WIDTH - hintWidth) / 2, y: A5_HEIGHT - 435,
+    x: (A5_WIDTH - hintWidth) / 2, y: A5_HEIGHT - 435 - dy,
     size: 9, font: fontBody, color: text,
   });
 

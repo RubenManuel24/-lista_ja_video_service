@@ -47,6 +47,12 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379
       - RENDER_OUTPUT_DIR=/app/render-output
+      # Lembretes diários (opcional; sem isto ficam desligados):
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY:-}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY:-}
+      - INVITE_BASE_URL=${INVITE_BASE_URL:-}
     volumes:
       - render-output:/app/render-output
     depends_on:
